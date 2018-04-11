@@ -35,8 +35,13 @@ class HomeScreen extends PureComponent {
     const weatherList = (
       <FlatList
         data={ this.props.cities }
-        renderItem={ ({ item }) => <WeatherBlock city={ item }/> }
-        keyExtractor={ (item, index) => item.name + index.toString() }
+        renderItem={ ({ item }) => 
+          <WeatherBlock 
+            city={ item } 
+            loadWeather={ this.props.loadWeather }
+          /> 
+        }
+        keyExtractor={ (item, index) => index.toString() }
       />
     );
 
@@ -69,6 +74,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = {
+  loadWeather: weatherAppActions.loadWeather,
   navigateTo: navigationActions.navigateTo
 };
 
