@@ -48,39 +48,44 @@ class WeatherBlock extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.state = { city: this.props.city };
+    this.loadWeather = this.loadWeather.bind(this);
+
     this.openWeatherService = new OpenWeatherService();
   }
 
-  componentDidMount() {
-    this.openWeatherService.getForecast(this.state.city.name)
-      .then((response) => {
-        const updatedCity = Object.assign({}, this.state.city);
-        updatedCity.todayTemp = getTodayTemp(response);
-        updatedCity.tomorrowTemp = getTomorrowTemp(response);
-        updatedCity.icon = getWeatherIconCode(response);
-        updatedCity.description = getDescription(response);
+  loadWeather() {
+    this.openWeatherService.getForecast(this.props.city.name)
+    .then((response) => {
+      const updatedCity = Object.assign({}, this.props.city);
+      updatedCity.todayTemp = getTodayTemp(response);
+      updatedCity.tomorrowTemp = getTomorrowTemp(response);
+      updatedCity.icon = getWeatherIconCode(response);
+      updatedCity.description = getDescription(response);
 
-        this.setState({ city: updatedCity });
-      });
+      this.props.loadWeather(updatedCity);
+    });
+  }
+
+  componentDidMount() {
+    this.loadWeather();
   }
 
   render() {
-    const remoteIconPath = `http://openweathermap.org/img/w/${ this.state.city.icon }.png`;
-    
+    const remoteIconPath = `http://openweathermap.org/img/w/${ this.props.city.icon }.png`;
+
     return (
         <View style={ [styles.weatherBlock] }>
             <View style={ [styles.descriptionBlock] }>
                 <Text style={ [styles.titleText] }>
-                  { this.state.city.name }
+                  { this.props.city.name }
                 </Text>
 
                 <Text style={ [styles.descriptionText] }>
-                  { this.state.city.description }
+                  { this.props.city.description }
                 </Text>
                 
-                <Text>Today: { this.state.city.todayTemp } &#8451;</Text>
-                <Text>Tomorrow: { this.state.city.tomorrowTemp } &#8451;</Text>
+                <Text>Today: { this.props.city.todayTemp } &#8451;</Text>
+                <Text>Tomorrow: { this.props.city.tomorrowTemp } &#8451;</Text>
             </View>
             <Image source={{uri: remoteIconPath}} style={ [styles.weatherIcon] } />
         </View>

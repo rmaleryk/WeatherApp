@@ -49,6 +49,18 @@ export default (state = initialState, action) => {
       }
     }
 
+    case ReduxEvents.WEATHER_LOADED: {
+      const updatedCities = [].concat(state.cities);
+      const indexToUpdate = updatedCities.findIndex((city) => city.name == action.city.name);
+
+      updatedCities[indexToUpdate] = action.city;
+      
+      return {
+        ...state,
+        cities: updatedCities
+      }
+    }
+
     default: {
       return state
     }
